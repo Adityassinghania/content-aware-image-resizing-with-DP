@@ -23,26 +23,42 @@ def compute_vertical_seam_v1(energy_data):
     input image. The image energy should have been computed before by the
     `compute_energy` function in the `energy` module.
 
-    This is the first version of the seam finding algorithm. You will implement
+    This is the first version of the seam finding algorithm. Implement
     the recurrence relation directly, outputting the energy of the lowest-energy
     seam and the x-coordinate where that seam ends.
 
-    This is one of the functions you will need to implement. Expected return
+    Expected return
     value: a tuple with two values:
 
       1. The x-coordinate where the lowest-energy seam ends.
       2. The total energy of that seam.
     """
+    # create 0 list of size of energy data
+    e_grid = [[0 for _ in row] for row in energy_data]
 
-    raise NotImplementedError('compute_vertical_seam_v1 is not implemented')
+    h = len(e_grid)
+    w = len(e_grid[0])
+    # set first row same as 1st row of energy data (base cases)
+    for i in range(w):
+        e_grid[0][i] = energy_data[0][1]
+
+    # loop over each row and calcualte min energy from parent row
+    for y in range(h):
+        for x in range(w):
+            # check if parent row will have 2 or 3 values
+            xmin = x-1 if x>0 else 0
+            xmax = x+1 if x<w-1 else w-1
+            min_energy_above = min(
+                e_grid[y-1][x_values] for x_values in range(xmin,xmax+1)
+            )
+        # set min energy for current row
+        e_grid[y][x] = energy_data[y][x] + min_energy_above
 
 
 def visualize_seam_end_on_image(pixels, end_x):
     """
     Draws a red box at the bottom of the image at the specified x-coordinate.
     This is done to visualize approximately where a vertical seam ends.
-
-    This is NOT one of the functions you have to implement.
     """
 
     h = len(pixels)
