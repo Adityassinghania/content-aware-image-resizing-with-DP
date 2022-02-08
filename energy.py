@@ -9,7 +9,6 @@ representing pixels:
     python3 energy.py surfer.jpg surfer-energy.png
 """
 
-
 import sys
 
 from utils import Color, read_image_into_array, write_array_into_image
@@ -27,8 +26,26 @@ def energy_at(pixels, x, y):
     This is one of the functions you will need to implement. Expected return
     value: a single number representing the energy at that point.
     """
+    h = len(pixels)
+    w = len(pixels[0])
 
-    raise NotImplementedError('energy_at is not implemented')
+    x0 = x if x == 0 else x - 1
+    x1 = x if x == w - 1 else x + 1
+
+    y0 = y if y == 0 else y - 1
+    y1 = y if y == h - 1 else y + 1
+
+    dxr = pixels[y][x0].r - pixels[y][x1].r
+    dxg = pixels[y][x0].g - pixels[y][x1].g
+    dxb = pixels[y][x0].b - pixels[y][x1].b
+    dx = dxr ** 2 + dxg ** 2 + dxb ** 2
+
+    dyr = pixels[y0][x].r - pixels[y1][x].r
+    dyg = pixels[y0][x].g - pixels[y1][x].g
+    dyb = pixels[y0][x].b - pixels[y1][x].b
+    dy = dyr ** 2 + dyg ** 2 + dyb ** 2
+    return dx + dy
+
 
 def compute_energy(pixels):
     """
@@ -42,8 +59,14 @@ def compute_energy(pixels):
     This is one of the functions you will need to implement. Expected return
     value: the 2D grid of energy values.
     """
+    # initialise empty list of same size as pixels
+    energy = [[0 for _ in row] for row in pixels]
+    # call the energy_at method on each pixel
+    for y, row in enumerate(pixels):
+        for x, _ in enumerate(row):
+            energy[y][x] = energy_at(pixels, x, y)
 
-    raise NotImplementedError('compute_energy is not implemented')
+    return energy
 
 
 def energy_data_to_colors(energy_data):
@@ -54,18 +77,17 @@ def energy_data_to_colors(energy_data):
       1. Normalize the energy values to be between 0 and 255.
       2. Convert these values into grayscale colors, where the RGB values are
          all the same for a single color.
-
-    This is NOT one of the functions you have to implement.
     """
-
+    # create list with 0 values
     colors = [[0 for _ in row] for row in energy_data]
-
+    # get the max energy from each row
     max_energy = max(
         energy
         for row in energy_data
         for energy in row
     )
 
+    # normalise energy value and create grayscale pixel
     for y, row in enumerate(energy_data):
         for x, energy in enumerate(row):
             energy_normalized = round(energy / max_energy * 255)
