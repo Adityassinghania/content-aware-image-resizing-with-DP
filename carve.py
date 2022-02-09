@@ -3,13 +3,10 @@ The third and final step in the seam carving process: removing the lowest-energy
 seam from an image. By doing so iteratively, the size of the image can be
 reduced (in one dimension) by multiple pixels.
 
-The functions you fill out in this module put together everything you've written
-so far into the full seam carving algorithm. Run this module in isolation to
-resize your image!
+Run this module in isolation to resize your image!
 
     python3 carve.py surfer.jpg 10 surfer-resized.png
 """
-
 
 import sys
 
@@ -24,12 +21,19 @@ def remove_seam_from_image(image, seam_xs):
     x-coordinates in the input. The x-coordinates are specified from top to
     bottom and span the entire height of the image.
 
-    This is one of the functions you will need to implement. Expected return
-    value: the 2D grid of colors. The grid will be smaller than the input by
+    Expected return value: the 2D grid of colors. The grid will be smaller than the input by
     one element in each row, but will have the same number of rows.
     """
+    new_pixels = [
+        [
+            p
+            for x, p in enumerate(row)
+            if x != seam_xs[y]
+        ]
+        for (y, row) in enumerate(image)
+    ]
 
-    raise NotImplementedError('remove_seam_from_image is not implemented')
+    return new_pixels
 
 
 def remove_n_lowest_seams_from_image(image, num_seams_to_remove):
@@ -47,14 +51,28 @@ def remove_n_lowest_seams_from_image(image, num_seams_to_remove):
     The `visualize_seam_on_image` is available if you want to visualize the
     lowest-energy seam at each step of the process.
 
-    This is one of the functions you will need to implement. Expected return
-    value: the 2D grid of colors. The grid will be smaller than the input by
+    Expected return value: the 2D grid of colors. The grid will be smaller than the input by
     `num_seams_to_remove` elements in each row, but will have the same number of
     rows.
     """
 
-    raise NotImplementedError(
-        'remove_n_lowest_seams_from_image is not implemented')
+    for i in range(num_seams_to_remove):
+        print(f'Removing seam {i + 1}/{num_seams_to_remove}')
+
+        print('  Computing energy...')
+        energy_data = compute_energy(image)
+        print('  Finding the lowest-energy seam...')
+        seam_xs, _ = compute_vertical_seam_v2(energy_data)
+
+        print(f'  Saving intermediate result to intermediate-{i}.png...')
+        visualized_pixels = visualize_seam_on_image(image, seam_xs)
+        write_array_into_image(visualized_pixels, f'intermediate/intermediate-{i}.png')
+
+        print('  Removing the lowest-energy seam...')
+        image = remove_seam_from_image(image, seam_xs)
+
+    return image
+
 
 if __name__ == '__main__':
     if len(sys.argv) != 4:
