@@ -10,7 +10,6 @@ be visualized:
     python3 seam_v1.py surfer.jpg surfer-seam-energy-v1.png
 """
 
-
 import sys
 
 from energy import compute_energy
@@ -40,19 +39,25 @@ def compute_vertical_seam_v1(energy_data):
     w = len(e_grid[0])
     # set first row same as 1st row of energy data (base cases)
     for i in range(w):
-        e_grid[0][i] = energy_data[0][1]
+        e_grid[0][i] = energy_data[0][i]
 
-    # loop over each row and calcualte min energy from parent row
+    # loop over each row and calculate min energy from parent row
     for y in range(h):
         for x in range(w):
             # check if parent row will have 2 or 3 values
-            xmin = x-1 if x>0 else 0
-            xmax = x+1 if x<w-1 else w-1
+            xmin = x - 1 if x > 0 else 0
+            xmax = x + 1 if x < w - 1 else w - 1
+
             min_energy_above = min(
-                e_grid[y-1][x_values] for x_values in range(xmin,xmax+1)
+                e_grid[y - 1][x_values] for x_values in range(xmin, xmax + 1)
             )
-        # set min energy for current row
-        e_grid[y][x] = energy_data[y][x] + min_energy_above
+            # set min energy for current row
+            e_grid[y][x] = energy_data[y][x] + min_energy_above
+
+    min_end_x, min_seam_energy = min(
+        enumerate(e_grid[h - 1]), key=lambda m: m[1]
+    )
+    return min_end_x, min_seam_energy
 
 
 def visualize_seam_end_on_image(pixels, end_x):
