@@ -11,13 +11,12 @@ There are four steps in the implementation:
 
 Each step is documented at the top of the exercise file.
 
-The code you write in the different steps are put together in the final step, but each step has some code written for you that allows you to visualize the progress up to that step.  For example, the energy calculation is what drives the seam carving process, but `energy.py` allows you to visualize the calculated energy if you run the file in isolation.
+The code in the different steps are put together in the final step, but each step has some code written for you that allows you to visualize the progress up to that step.  For example, the energy calculation is what drives the seam carving process, but `energy.py` allows you to visualize the calculated energy if you run the file in isolation.
 
 Setup
 -----
 
-1. Ensure you have Python 3 installed. I'm a fan of [pyenv](https://github.com/pyenv/pyenv), but you can install the latest version of Python in any way you wish.
-
+1. Ensure you have Python 3 installed.
 1. Install the dependencies using `pip`: `pip install -r requirements.txt`
 
 1. Now you should be able to implement and run the code as explained at the top of each exercise file.
